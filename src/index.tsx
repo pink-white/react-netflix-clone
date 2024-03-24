@@ -1,9 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
+import App from "./Root";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
 import { theme } from "./theme";
+import { RouterProvider } from "react-router-dom";
+import router from "./Router";
 
 const GlobalStyled = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
@@ -79,7 +81,7 @@ root.render(
   <QueryClientProvider client={client}>
     <ThemeProvider theme={theme}>
       <GlobalStyled />
-      <App />
+      <RouterProvider router={router} />
     </ThemeProvider>
   </QueryClientProvider>
 );

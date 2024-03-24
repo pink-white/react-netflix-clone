@@ -5,8 +5,7 @@ import styled from "styled-components";
 import { Variants, motion } from "framer-motion";
 import { imagePath } from "../utils";
 import { useEffect } from "react";
-import { useRouteMatch, useHistory } from "react-router-dom";
-import Detail from "../Components/Detail";
+import { useNavigate, Outlet, useSearchParams } from "react-router-dom";
 
 const Wrapper = styled.div`
   height: auto;
@@ -38,7 +37,7 @@ const Box = styled(motion.div)<{ $bgPhoto: string }>`
 const NoDataInfo = styled.span`
   width: 400px;
   font-size: 13px;
-  margin: 0 auto;
+  margin-bottom: 310px;
 `;
 
 const boxVariants: Variants = {
@@ -47,7 +46,7 @@ const boxVariants: Variants = {
     y: 0,
   },
   hover: {
-    scale: 1.1,
+    scale: 1.05,
     y: -15,
     zIndex: 1,
     transition: { type: "tween", delay: 0.5, duration: 0.2 },
@@ -55,17 +54,17 @@ const boxVariants: Variants = {
 };
 
 function Search() {
-  const location = useLocation();
-  const keyword = new URLSearchParams(location.search).get("k");
+  const [readParams] = useSearchParams();
+  const keyword = readParams.get("k");
   const { data, isLoading, refetch } = useQuery<IGetResult>("search", () =>
     getSearch(keyword || "")
   );
   useEffect(() => {
     refetch();
   }, [keyword, refetch]);
-  const history = useHistory();
+  const navigate = useNavigate();
   const routeHistory = (id: number, mediaType?: string) => {
-    history.push(`/search/${mediaType}/${id}?k=${keyword}&n=search`);
+    navigate(`/search/${mediaType}/${id}?k=${keyword}&n=search`);
   };
   return (
     <Wrapper>
@@ -79,21 +78,24 @@ function Search() {
               입력하신 검색어 `{keyword}`와(과) 일치하는 결과가 없습니다.
             </NoDataInfo>
           ) : (
-            data?.results.map((data) => (
-              <Box
-                layoutId={`search${data.id}`}
-                onClick={() => routeHistory(data.id, data.media_type)}
-                $bgPhoto={imagePath(data.poster_path || data.backdrop_path)}
-                key={data.id}
-                variants={boxVariants}
-                initial="initial"
-                whileHover="hover"
-                transition={{ type: "tween" }}
-              ></Box>
-            ))
+            data?.results
+              .filter((data) => data.backdrop_path || data.poster_path)
+              .map((data) => (
+                <Box
+                  layoutId={`search${data.id}`}
+                  onClick={() => routeHistory(data.id, data.media_type)}
+                  $bgPhoto={imagePath(data.poster_path || data.backdrop_path)}
+                  key={data.id}
+                  variants={boxVariants}
+                  initial="initial"
+                  whileHover="hover"
+                  transition={{ type: "tween" }}
+                ></Box>
+              ))
           )}
         </Row>
       )}
+      <Outlet />
     </Wrapper>
   );
 }

@@ -6,7 +6,7 @@ import {
   useMotionValueEvent,
   useScroll,
 } from "framer-motion";
-import { Link, useHistory, useRouteMatch } from "react-router-dom";
+import { Link, useNavigate, useMatch } from "react-router-dom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaRegBell } from "react-icons/fa6";
@@ -14,6 +14,7 @@ import { FaPencil } from "react-icons/fa6";
 import { IoPersonOutline } from "react-icons/io5";
 import { RiChatSmileLine, RiCustomerService2Fill } from "react-icons/ri";
 import { IoMdArrowDropup } from "react-icons/io";
+import { HiMagnifyingGlass } from "react-icons/hi2";
 
 const Nav = styled(motion.nav)`
   display: flex;
@@ -81,7 +82,8 @@ const Search = styled.form`
   position: relative;
 `;
 const SearchSvg = styled(motion.svg)`
-  height: 27px;
+  height: 26px;
+
   fill: currentColor;
   cursor: pointer;
   margin-right: 15px;
@@ -201,13 +203,16 @@ interface IForm {
   keyword: string;
 }
 function Header() {
-  const homeMatch = useRouteMatch("/");
-  const homeMatch2 = useRouteMatch("/movie/:id/");
-  const homeMatch3 = useRouteMatch("/tv/:id/");
-  const home = homeMatch || homeMatch2 || homeMatch3;
-  const seriesMatch = useRouteMatch("/series");
-  const movieMatch = useRouteMatch("/movies");
-  const isHome = home && !seriesMatch && !movieMatch;
+  const homeMatch = useMatch("/");
+  const homeMatch2 = useMatch("/movie/:id/");
+  const homeMatch3 = useMatch("/tv/:id/");
+  const isHome = homeMatch || homeMatch2 || homeMatch3;
+  const seriesMatch = useMatch("/series");
+  const seriesMatch2 = useMatch("/series/tv/:id");
+  const isSeries = seriesMatch || seriesMatch2;
+  const movieMatch = useMatch("/movies");
+  const movieMatch2 = useMatch("/movies/movie/:id");
+  const isMovie = movieMatch || movieMatch2;
   const { scrollY } = useScroll();
   const navAnime = useAnimation();
   // nav animate prop 조건문이외의 방법
@@ -235,10 +240,10 @@ function Header() {
       setSearchOpen(false);
     }
   };
-  const history = useHistory();
+  const navigate = useNavigate();
   const { register, handleSubmit } = useForm<IForm>();
   const onValid = (data: IForm) => {
-    history.push(`/search?k=${data.keyword}`);
+    navigate(`/search?k=${data.keyword}`);
   };
   return (
     <Nav
@@ -268,13 +273,13 @@ function Header() {
           <Item whileHover={{ opacity: 0.5 }}>
             <Link to="/series">
               시리즈
-              {seriesMatch && <Circle layoutId="circle" />}
+              {isSeries && <Circle layoutId="circle" />}
             </Link>
           </Item>
           <Item whileHover={{ opacity: 0.5 }}>
             <Link to="/movies">
               영화
-              {movieMatch && <Circle layoutId="circle" />}
+              {isMovie && <Circle layoutId="circle" />}
             </Link>
           </Item>
         </Items>

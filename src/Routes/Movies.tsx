@@ -8,15 +8,14 @@ import {
   getTrendingMovies,
 } from "../api";
 import Slider from "../Components/SliderTemplate";
-import { useRouteMatch } from "react-router-dom";
-import Detail from "../Components/Detail";
+import { Outlet, useMatch } from "react-router-dom";
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-function Movie() {
+function Movies() {
   const { data: trendingMovieData1, isLoading: trendingMovieLoading1 } =
     useQuery<IGetResult>(["movie", "trending"], () => getTrendingMovies(1));
   const { data: trendingMovieData2, isLoading: trendingMovieLoading2 } =
@@ -29,9 +28,7 @@ function Movie() {
     useQuery<IGetResult>(["movie", "top2"], () => getTopRatedMovies(2));
   const { data: topMovieData3, isLoading: topMovieLoading3 } =
     useQuery<IGetResult>(["movie", "top3"], () => getTopRatedMovies(3));
-  const movieMatch = useRouteMatch<{ movieId: string }>(
-    "movies/movie/:movieId"
-  );
+  const movieMatch = useMatch("movies/movie/:id");
   return (
     <Wrapper>
       {trendingMovieData1 && (
@@ -85,9 +82,9 @@ function Movie() {
           dataName="trendingMovie"
         />
       )}
-      {movieMatch && <Detail />}
+      <Outlet />
     </Wrapper>
   );
 }
 
-export default Movie;
+export default Movies;

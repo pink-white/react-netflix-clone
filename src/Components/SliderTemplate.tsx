@@ -2,7 +2,7 @@ import { AnimatePresence, Variants, motion } from "framer-motion";
 import styled from "styled-components";
 import { IGetResult } from "../api";
 import { useState } from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useNavigate, useMatch } from "react-router-dom";
 import { imagePath } from "../utils";
 
 const Wrapper = styled.div`
@@ -200,18 +200,18 @@ function Slider({
   category,
   dataName,
 }: ISliderProps) {
-  const homeMatch = useRouteMatch("/");
-  const seriesMatch = useRouteMatch("/series");
-  const movieMatch = useRouteMatch("/movies");
-  const routeHistory = (id: number, mediaType?: string) => {
+  const homeMatch = useMatch("/");
+  const seriesMatch = useMatch("/series");
+  const movieMatch = useMatch("/movies");
+  const routerNavigate = (id: number, mediaType?: string) => {
     if (seriesMatch) {
-      return history.push(`/series/tv/${id}?n=${dataName}`);
+      return navigate(`/series/tv/${id}?n=${dataName}`);
     }
     if (movieMatch) {
-      return history.push(`/movies/movie/${id}?n=${dataName}`);
+      return navigate(`/movies/movie/${id}?n=${dataName}`);
     }
     if (homeMatch) {
-      return history.push(
+      return navigate(
         category
           ? `/${category}/${id}?n=${dataName}`
           : `/${mediaType}/${id}?n=${dataName}`
@@ -220,7 +220,7 @@ function Slider({
   };
 
   const offset = 6;
-  const history = useHistory();
+  const navigate = useNavigate();
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const [back, setBack] = useState(false);
@@ -284,7 +284,7 @@ function Slider({
                   <>
                     {isRanking ? (
                       <RankingBox
-                        onClick={() => routeHistory(data.id)}
+                        onClick={() => routerNavigate(data.id)}
                         layoutId={`${dataName}${data.id}`}
                         key={data.id}
                         $bgPhoto={imagePath(data.poster_path)}
@@ -302,7 +302,7 @@ function Slider({
                       </RankingBox>
                     ) : (
                       <Box
-                        onClick={() => routeHistory(data.id, data.media_type)}
+                        onClick={() => routerNavigate(data.id, data.media_type)}
                         layoutId={`${dataName}${data.id}`}
                         key={data.id}
                         $bgPhoto={imagePath(data.poster_path)}

@@ -3,7 +3,7 @@ import TopBanner from "../Components/TopBanner";
 import { useQuery } from "react-query";
 import { IGetResult, getPopularTv, getTopRatedTv, getTrendingTv } from "../api";
 import Slider from "../Components/SliderTemplate";
-import { useRouteMatch } from "react-router-dom";
+import { Outlet, useMatch } from "react-router-dom";
 import Detail from "../Components/Detail";
 
 const Wrapper = styled.div`
@@ -34,7 +34,7 @@ function Series() {
     ["tv", "top5"],
     () => getTopRatedTv(5)
   );
-  const seriesMatch = useRouteMatch<{ seriesId: string }>("/series/tv/:id");
+  const seriesMatch = useMatch("/series/tv/:id");
   return (
     <Wrapper>
       {trendingTvData1 && (
@@ -86,6 +86,7 @@ function Series() {
           dataName="topTv5"
         />
       )}
+      <Outlet />
     </Wrapper>
   );
 }

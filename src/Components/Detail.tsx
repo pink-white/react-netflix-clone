@@ -1,9 +1,10 @@
 import { AnimatePresence, motion, useScroll } from "framer-motion";
 import {
-  useHistory,
+  useNavigate,
   useLocation,
   useParams,
-  useRouteMatch,
+  useMatch,
+  useSearchParams,
 } from "react-router-dom";
 import styled from "styled-components";
 import { imagePath } from "../utils";
@@ -41,7 +42,7 @@ const MovieModal = styled(motion.div)`
 const Overlay = styled(motion.div)`
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(20, 20, 20, 0.7);
   position: fixed;
   top: 0;
   opacity: 0;
@@ -281,41 +282,31 @@ function Detail() {
       document.body.style.overflowY = "auto";
     };
   }, []);
-  const location = useLocation();
-  console.log(location);
-  const sliderCategory = new URLSearchParams(location.search).get("n");
-  console.log(sliderCategory);
-  const history = useHistory();
+  const [readParams] = useSearchParams();
+  const sliderCategory = readParams.get("n");
+  const navigate = useNavigate();
   const overlayClick = () => {
-    history.goBack();
+    navigate(-1);
   };
   const { id } = useParams<{ id: string }>();
-  const seriesMatch = useRouteMatch<{ seriesId: string }>(`/tv/:seriesId`);
-  const seriesMatch2 = useRouteMatch<{ seriesId: string }>(
-    `/series/tv/:seriesId`
-  );
-  const seriesMatch3 = useRouteMatch<{ seriesId: string }>(
-    `/search/tv/:seriesId`
-  );
-  const movieMatch = useRouteMatch<{ movieId: string }>(`/movie/:movieId`);
-  const movieMatch2 = useRouteMatch<{ movieId: string }>(
-    `/movies/movie/:movieId`
-  );
-  const movieMatch3 = useRouteMatch<{ movieId: string }>(
-    `/search/movie/:movieId`
-  );
+  const seriesMatch = useMatch(`/tv/:id`);
+  const seriesMatch2 = useMatch(`/series/tv/:id`);
+  const seriesMatch3 = useMatch(`/search/tv/:id`);
+  const movieMatch = useMatch(`/movie/:id`);
+  const movieMatch2 = useMatch(`/movies/movie/:id`);
+  const movieMatch3 = useMatch(`/search/movie/:id`);
   const isSeries = seriesMatch || seriesMatch2 || seriesMatch3;
   const isMovie = movieMatch || movieMatch2 || movieMatch3;
   const category = isMovie ? "movie" : isSeries ? "tv" : undefined;
   const { data: detailData, isLoading: detailLoading } =
-    useQuery<IDetailResult>("detail", () => getDetail(category, id));
+    useQuery<IDetailResult>("detail", () => getDetail(category, id!));
   const { data: similarData, isLoading: similarLoading } = useQuery<IGetResult>(
     "similar",
-    () => getSimilar(category, id)
+    () => getSimilar(category, id!)
   );
   const { data: creditData, isLoading: creditLoading } = useQuery<ICreditData>(
     "credit",
-    () => getCredit(category, id)
+    () => getCredit(category, id!)
   );
 
   return (

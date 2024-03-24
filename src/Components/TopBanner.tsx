@@ -4,7 +4,7 @@ import { IGetResult } from "../api";
 import { FaPlay } from "react-icons/fa";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { motion } from "framer-motion";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useNavigate, useMatch } from "react-router-dom";
 
 const Banner = styled.div<{ $bgPhoto: string }>`
   height: 100vh;
@@ -76,19 +76,19 @@ interface ITopBannerProps {
 }
 
 function TopBanner({ data, isLoading }: ITopBannerProps) {
-  const history = useHistory();
-  const homeMatch = useRouteMatch("/");
-  const seriesMatch = useRouteMatch("/series");
-  const movieMatch = useRouteMatch("/movies");
-  const routeHistory = (id: number) => {
+  const navigate = useNavigate();
+  const homeMatch = useMatch("/");
+  const seriesMatch = useMatch("/series");
+  const movieMatch = useMatch("/movies");
+  const routerNavigate = (id: number) => {
     if (seriesMatch) {
-      return history.push(`/series/tv/${id}`);
+      return navigate(`/series/tv/${id}`);
     }
     if (movieMatch) {
-      return history.push(`/movies/movie/${id}`);
+      return navigate(`/movies/movie/${id}`);
     }
     if (homeMatch) {
-      return history.push(`/movie/${id}`);
+      return navigate(`/movie/${id}`);
     }
   };
   return (
@@ -108,7 +108,7 @@ function TopBanner({ data, isLoading }: ITopBannerProps) {
                 재생
               </PlayBtn>
               <InfoBtn
-                onClick={() => routeHistory(data.results[0].id)}
+                onClick={() => routerNavigate(data.results[0].id)}
                 whileTap={{ border: "2px solid white" }}
                 whileHover={{ opacity: 0.6 }}
               >

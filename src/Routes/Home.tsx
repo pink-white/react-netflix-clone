@@ -7,7 +7,7 @@ import {
   getAllTrending,
 } from "../api";
 import styled from "styled-components";
-import { useRouteMatch } from "react-router-dom";
+import { Outlet, useMatch } from "react-router-dom";
 import TopBanner from "../Components/TopBanner";
 import Slider from "../Components/SliderTemplate";
 import Detail from "../Components/Detail";
@@ -28,8 +28,8 @@ function Home() {
     useQuery<IGetResult>(["movies", "papular"], () => getPopularMovies(1));
   const { data: allTrendingData, isLoading: allTrendingLoading } =
     useQuery<IGetResult>(["all", "trending"], getAllTrending);
-  const movieMatch = useRouteMatch<{ movieId: string }>("/movie/:movieId");
-  const seriesMatch = useRouteMatch<{ seriesId: string }>("/tv/:seriesId");
+  const movieMatch = useMatch("/movie/:id");
+  const seriesMatch = useMatch("/tv/:id");
 
   return (
     <Wrapper>
@@ -82,6 +82,7 @@ function Home() {
           dataName="allTrending"
         />
       )}
+      <Outlet />
     </Wrapper>
   );
 }
