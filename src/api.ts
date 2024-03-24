@@ -1,10 +1,6 @@
 const API_KEY = "5eb7491ca3a1c7c0c4c9453cc171e630";
 const BASE_URL = "https://api.themoviedb.org/3";
 
-export const timeSecond = Math.floor(Date.now() / 1000)
-  .toString()
-  .slice(0, 10);
-
 export interface IData {
   backdrop_path: string;
   id: number;
@@ -15,6 +11,7 @@ export interface IData {
   media_type?: string;
   first_air_date?: string;
   release_date?: string;
+  genre_ids?: [number];
 }
 
 export interface IGetResult {
@@ -46,6 +43,11 @@ export interface IDetailResult {
 export interface ICreditData {
   cast: {
     known_for_department: string;
+    name: string;
+  }[];
+  crew: {
+    known_for_department: string;
+    popularity: number;
     name: string;
     job?: string;
   }[];
@@ -120,5 +122,11 @@ export function getSimilar(category: string | undefined, id: string) {
 export function getCredit(category: string | undefined, id: string) {
   return fetch(
     `${BASE_URL}/${category}/${id}/credits?api_key=${API_KEY}&language=ko-KR`
+  ).then((response) => response.json());
+}
+
+export function getGenreList(category: string | undefined) {
+  return fetch(
+    `${BASE_URL}/genre/${category}/list?api_key=${API_KEY}&language=ko-KR`
   ).then((response) => response.json());
 }

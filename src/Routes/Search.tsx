@@ -34,13 +34,6 @@ const Box = styled(motion.div)<{ $bgPhoto: string }>`
   position: relative;
   cursor: pointer;
 `;
-const DataTitle = styled.span`
-  position: relative;
-  top: calc(100% - -5px);
-  margin-left: 3px;
-  font-weight: 500;
-  width: 210px;
-`;
 
 const NoDataInfo = styled.span`
   width: 400px;
@@ -63,22 +56,16 @@ const boxVariants: Variants = {
 
 function Search() {
   const location = useLocation();
-  const keyword = new URLSearchParams(location.search).get("keyword");
+  const keyword = new URLSearchParams(location.search).get("k");
   const { data, isLoading, refetch } = useQuery<IGetResult>("search", () =>
     getSearch(keyword || "")
   );
   useEffect(() => {
     refetch();
   }, [keyword, refetch]);
-  const movieMatch = useRouteMatch<{ movieId: string }>(
-    "/search/movie/:movieId"
-  );
-  const seriesMatch = useRouteMatch<{ seriesId: string }>(
-    "/search/tv/:seriesId"
-  );
   const history = useHistory();
   const routeHistory = (id: number, mediaType?: string) => {
-    history.push(`/search/${mediaType}/${id}?keyword=${keyword}`);
+    history.push(`/search/${mediaType}/${id}?k=${keyword}&n=search`);
   };
   return (
     <Wrapper>
@@ -94,6 +81,7 @@ function Search() {
           ) : (
             data?.results.map((data) => (
               <Box
+                layoutId={`search${data.id}`}
                 onClick={() => routeHistory(data.id, data.media_type)}
                 $bgPhoto={imagePath(data.poster_path || data.backdrop_path)}
                 key={data.id}
@@ -101,9 +89,7 @@ function Search() {
                 initial="initial"
                 whileHover="hover"
                 transition={{ type: "tween" }}
-              >
-                <DataTitle>{data.title || data.name}</DataTitle>
-              </Box>
+              ></Box>
             ))
           )}
         </Row>

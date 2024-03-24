@@ -11,7 +11,10 @@ import Slider from "../Components/SliderTemplate";
 import { useRouteMatch } from "react-router-dom";
 import Detail from "../Components/Detail";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
 function Movie() {
   const { data: trendingMovieData1, isLoading: trendingMovieLoading1 } =
@@ -43,6 +46,7 @@ function Movie() {
           isLoading={popularMovieLoading1}
           sliderTitle="지금 인기있는 영화"
           category="movie"
+          dataName="popularMovie"
         />
       )}
       {topMovieData1 && (
@@ -51,7 +55,7 @@ function Movie() {
           isLoading={topMovieLoading1}
           sliderTitle="역대 TOP18 영화"
           isRanking={true}
-          category="movie"
+          dataName="topMovie"
         />
       )}
       {topMovieData2 && (
@@ -60,6 +64,7 @@ function Movie() {
           isLoading={topMovieLoading2}
           sliderTitle="찬사를 받은 영화"
           category="movie"
+          dataName="topMovie2"
         />
       )}
       {topMovieData3 && (
@@ -68,6 +73,7 @@ function Movie() {
           isLoading={topMovieLoading3}
           sliderTitle="좋아할만한 영화"
           category="movie"
+          dataName="topMovie3"
         />
       )}
       {trendingMovieData2 && (
@@ -76,6 +82,7 @@ function Movie() {
           isLoading={trendingMovieLoading2}
           sliderTitle="진심이 느껴지는 영화"
           category="movie"
+          dataName="trendingMovie"
         />
       )}
       {movieMatch && <Detail />}

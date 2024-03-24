@@ -15,7 +15,6 @@ import {
   getCredit,
   getDetail,
   getSimilar,
-  timeSecond,
 } from "../api";
 import { FaPlay } from "react-icons/fa";
 import { GoPlus } from "react-icons/go";
@@ -33,7 +32,7 @@ const MovieModal = styled(motion.div)`
   left: 0;
   margin: 0 auto;
   border-radius: 10px;
-  z-index: 99999;
+  z-index: 9999999;
   background-color: ${(props) => props.theme.black.veryDark};
   overflow-y: scroll;
   overflow-x: hidden;
@@ -42,11 +41,11 @@ const MovieModal = styled(motion.div)`
 const Overlay = styled(motion.div)`
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.7);
   position: fixed;
   top: 0;
   opacity: 0;
-  z-index: 99998;
+  z-index: 999998;
 `;
 const ModalCover = styled.div<{ $bgPhoto: string }>`
   width: 100%;
@@ -265,15 +264,6 @@ const Hr = styled.div`
   border: 1px solid rgb(74, 73, 73);
   margin: 0 auto;
 `;
-const DetailInfoBox = styled.div`
-  padding-left: 45px;
-  display: flex;
-  flex-direction: column;
-`;
-const DetailInfoTitle = styled.h2`
-  font-size: 30px;
-  font-weight: 500;
-`;
 
 function convertMinutesToHoursAndMinutes(minutes: number | undefined) {
   if (minutes === undefined) return;
@@ -291,6 +281,10 @@ function Detail() {
       document.body.style.overflowY = "auto";
     };
   }, []);
+  const location = useLocation();
+  console.log(location);
+  const sliderCategory = new URLSearchParams(location.search).get("n");
+  console.log(sliderCategory);
   const history = useHistory();
   const overlayClick = () => {
     history.goBack();
@@ -323,6 +317,7 @@ function Detail() {
     "credit",
     () => getCredit(category, id)
   );
+
   return (
     <>
       {detailLoading && similarLoading && creditLoading ? (
@@ -337,11 +332,9 @@ function Detail() {
                 exit={{ opacity: 0 }}
               />
               <MovieModal
-                layoutId={id + ""}
-                style={{ opacity: 0, y: -100 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 100 }}
-                transition={{ type: "tween" }}
+                layoutId={`${sliderCategory}${id}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
               >
                 {detailData && (
                   <>
@@ -403,7 +396,6 @@ function Detail() {
                             <h4 key={cast.name}>
                               {cast.known_for_department === "Acting" &&
                                 cast.name}
-
                               {index !==
                                 creditData.cast.slice(0, 4).length - 1 && ", "}
                             </h4>
@@ -437,7 +429,7 @@ function Detail() {
                 <Similar>
                   {similarData && similarData.results.length === 0 ? (
                     <NoSimilarData>
-                      함께 시청된 콘텐츠가 존재하지않습니다.
+                      함께 시청된 콘텐츠가 존재하지 않습니다.
                     </NoSimilarData>
                   ) : (
                     similarData?.results
@@ -467,24 +459,6 @@ function Detail() {
                       ))
                   )}
                 </Similar>
-                <Hr />
-                <DetailInfoBox>
-                  <DetailInfoTitle>
-                    {detailData?.name || detailData?.title} 상세정보
-                  </DetailInfoTitle>
-                  <div>
-                    <h3>감독: </h3>
-                    {creditData?.cast.map((director) => {
-                      if (
-                        director.job === "Director" &&
-                        director.known_for_department === "Directing"
-                      ) {
-                        return <h4 key={director.name}>{director.name}</h4>;
-                      }
-                      return <h4>wow</h4>;
-                    })}
-                  </div>
-                </DetailInfoBox>
               </MovieModal>
             </>
           ) : null}

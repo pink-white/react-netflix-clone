@@ -70,12 +70,12 @@ const InfoBtn = styled(motion.div)`
   }
 `;
 
-interface IHomeBannerProps {
+interface ITopBannerProps {
   data: IGetResult;
   isLoading: boolean;
 }
 
-function TopBanner({ data, isLoading }: IHomeBannerProps) {
+function TopBanner({ data, isLoading }: ITopBannerProps) {
   const history = useHistory();
   const homeMatch = useRouteMatch("/");
   const seriesMatch = useRouteMatch("/series");

@@ -13,8 +13,8 @@ import Slider from "../Components/SliderTemplate";
 import Detail from "../Components/Detail";
 
 const Wrapper = styled.div`
-  height: auto;
-  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 function Home() {
@@ -42,6 +42,7 @@ function Home() {
           sliderTitle="상영중인 영화"
           isLoading={upcomingLoading}
           category="movie"
+          dataName="upcoming"
         />
       )}
       {trendingTvData2 && (
@@ -50,6 +51,7 @@ function Home() {
           sliderTitle="지금 뜨는 콘텐츠"
           isLoading={trendingTvLoading2}
           category="tv"
+          dataName="trendingTv2"
         />
       )}
       {popularMovieData && (
@@ -59,6 +61,7 @@ function Home() {
           isLoading={popularMovieLoading}
           isRanking={true}
           category="movie"
+          dataName="popularMovie"
         />
       )}
       {trendingTvData1 && (
@@ -68,6 +71,7 @@ function Home() {
           isLoading={trendingTvLoading1}
           isRanking={true}
           category="tv"
+          dataName="trendingTv"
         />
       )}
       {allTrendingData && (
@@ -75,6 +79,7 @@ function Home() {
           data={allTrendingData}
           sliderTitle="지금 인기있는 시리즈, 영화"
           isLoading={allTrendingLoading}
+          dataName="allTrending"
         />
       )}
     </Wrapper>

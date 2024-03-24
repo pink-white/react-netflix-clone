@@ -1,6 +1,6 @@
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import styled from "styled-components";
-import { IGetResult, timeSecond } from "../api";
+import { IGetResult } from "../api";
 import { useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { imagePath } from "../utils";
@@ -171,7 +171,7 @@ const boxVariants: Variants = {
     y: 0,
   },
   hover: {
-    scale: 1.1,
+    scale: 1.05,
     y: -15,
     transition: { type: "tween", delay: 0.5, duration: 0.2 },
   },
@@ -189,6 +189,7 @@ interface ISliderProps {
   isLoading: boolean;
   isRanking?: boolean;
   category?: string;
+  dataName: string;
 }
 
 function Slider({
@@ -197,20 +198,23 @@ function Slider({
   isLoading,
   isRanking,
   category,
+  dataName,
 }: ISliderProps) {
   const homeMatch = useRouteMatch("/");
   const seriesMatch = useRouteMatch("/series");
   const movieMatch = useRouteMatch("/movies");
   const routeHistory = (id: number, mediaType?: string) => {
     if (seriesMatch) {
-      return history.push(`/series/tv/${id}`);
+      return history.push(`/series/tv/${id}?n=${dataName}`);
     }
     if (movieMatch) {
-      return history.push(`/movies/mv/${id}`);
+      return history.push(`/movies/movie/${id}?n=${dataName}`);
     }
     if (homeMatch) {
       return history.push(
-        category ? `/${category}/${id}` : `/${mediaType}/${id}`
+        category
+          ? `/${category}/${id}?n=${dataName}`
+          : `/${mediaType}/${id}?n=${dataName}`
       );
     }
   };
@@ -241,6 +245,7 @@ function Slider({
       setIndex((prev) => (prev === minIndexMovies ? 2 : prev - 1));
     }
   };
+
   return (
     <Wrapper>
       {isLoading ? (
@@ -280,7 +285,7 @@ function Slider({
                     {isRanking ? (
                       <RankingBox
                         onClick={() => routeHistory(data.id)}
-                        layoutId={`${sliderTitle}${data.id}`}
+                        layoutId={`${dataName}${data.id}`}
                         key={data.id}
                         $bgPhoto={imagePath(data.poster_path)}
                         variants={boxVariants}
@@ -298,7 +303,7 @@ function Slider({
                     ) : (
                       <Box
                         onClick={() => routeHistory(data.id, data.media_type)}
-                        layoutId={`${sliderTitle}${data.id}`}
+                        layoutId={`${dataName}${data.id}`}
                         key={data.id}
                         $bgPhoto={imagePath(data.poster_path)}
                         variants={boxVariants}
@@ -306,11 +311,11 @@ function Slider({
                         whileHover="hover"
                         transition={{ type: "tween" }}
                       >
-                        {/*     <Info variants={infoVariants}>
-                <InfoBox>
-                  <IoChevronDownCircleOutline />
-                </InfoBox>
-              </Info> */}
+                        {/* <Info variants={infoVariants}>
+                          <InfoBox>
+                            <IoChevronDownCircleOutline />
+                          </InfoBox>
+                        </Info> */}
                       </Box>
                     )}
                   </>

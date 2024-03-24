@@ -10,6 +10,10 @@ import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaRegBell } from "react-icons/fa6";
+import { FaPencil } from "react-icons/fa6";
+import { IoPersonOutline } from "react-icons/io5";
+import { RiChatSmileLine, RiCustomerService2Fill } from "react-icons/ri";
+import { IoMdArrowDropup } from "react-icons/io";
 
 const Nav = styled(motion.nav)`
   display: flex;
@@ -17,12 +21,12 @@ const Nav = styled(motion.nav)`
   align-items: center;
   position: fixed;
   width: 100%;
-  height: 60px;
+  height: 65px;
   top: 0;
   font-size: 14px;
   padding: 20px 60px;
   color: white;
-  z-index: 999999;
+  z-index: 99999;
 `;
 const Column = styled.div`
   display: flex;
@@ -92,7 +96,7 @@ const SearchInput = styled(motion.input)`
   z-index: -1;
   position: absolute;
   right: 15px;
-  font-size: 15px;
+  font-size: 13px;
   color: white;
   border-radius: 2px;
   width: 250px;
@@ -100,10 +104,15 @@ const SearchInput = styled(motion.input)`
 const ProfileBox = styled.div`
   display: flex;
   align-items: center;
+  position: relative;
   cursor: pointer;
-  :hover {
+  &:hover {
     .arrowSvg {
       transform: rotateZ(180deg);
+    }
+    .ProfileModal {
+      opacity: 1;
+      visibility: visible;
     }
   }
 `;
@@ -115,10 +124,57 @@ const ProfileImg = styled.img`
   margin-right: 6px;
 `;
 const ProfileArrow = styled.svg`
-  height: 15px;
-  width: 15px;
+  height: 14px;
+  width: 14px;
   fill: white;
   transition: transform 0.2s ease-in-out;
+`;
+const ProfileModal = styled.div`
+  position: absolute;
+  bottom: -227px;
+  left: -119px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 195px;
+  height: 210px;
+  background-color: black;
+  border: 1px solid ${(props) => props.theme.black.lighter};
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.2s ease-in-out;
+  .upArrowSvg {
+    font-size: 25px;
+    position: absolute;
+    top: -20px;
+    right: 30px;
+  }
+`;
+const ModalItem = styled.div`
+  display: flex;
+  align-items: center;
+
+  padding: 5px 15px;
+  span {
+    font-size: 12px;
+  }
+  svg {
+    font-size: 24px;
+    margin-right: 5px;
+    color: darkgray;
+  }
+`;
+const Hr = styled.div`
+  width: 100%;
+  border: 1px solid ${(props) => props.theme.black.lighter};
+  margin-top: 7px;
+  margin-bottom: 13px;
+`;
+const Span = styled.span`
+  text-align: center;
+  margin: 0 auto;
+  font-size: 12px;
 `;
 
 const navVariants: Variants = {
@@ -146,8 +202,12 @@ interface IForm {
 }
 function Header() {
   const homeMatch = useRouteMatch("/");
+  const homeMatch2 = useRouteMatch("/movie/:id/");
+  const homeMatch3 = useRouteMatch("/tv/:id/");
+  const home = homeMatch || homeMatch2 || homeMatch3;
   const seriesMatch = useRouteMatch("/series");
   const movieMatch = useRouteMatch("/movies");
+  const isHome = home && !seriesMatch && !movieMatch;
   const { scrollY } = useScroll();
   const navAnime = useAnimation();
   // nav animate prop 조건문이외의 방법
@@ -178,7 +238,7 @@ function Header() {
   const history = useHistory();
   const { register, handleSubmit } = useForm<IForm>();
   const onValid = (data: IForm) => {
-    history.push(`/search?keyword=${data.keyword}`);
+    history.push(`/search?k=${data.keyword}`);
   };
   return (
     <Nav
@@ -203,9 +263,7 @@ function Header() {
         </Link>
         <Items>
           <Item whileHover={{ opacity: 0.5 }}>
-            <Link to="/">
-              홈{homeMatch?.isExact && <Circle layoutId="circle" />}
-            </Link>
+            <Link to="/">홈{isHome && <Circle layoutId="circle" />}</Link>
           </Item>
           <Item whileHover={{ opacity: 0.5 }}>
             <Link to="/series">
@@ -255,6 +313,27 @@ function Header() {
           >
             <path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z" />
           </ProfileArrow>
+          <ProfileModal className="ProfileModal">
+            <IoMdArrowDropup className="upArrowSvg" />
+            <ModalItem>
+              <FaPencil />
+              <span>프로필 관리</span>
+            </ModalItem>
+            <ModalItem>
+              <IoPersonOutline />
+              <span>프로필 이전</span>
+            </ModalItem>
+            <ModalItem>
+              <RiChatSmileLine />
+              <span>계정</span>
+            </ModalItem>
+            <ModalItem>
+              <RiCustomerService2Fill />
+              <span>고객 센터</span>
+            </ModalItem>
+            <Hr />
+            <Span>넷플릭스에서 로그아웃</Span>
+          </ProfileModal>
         </ProfileBox>
       </Column>
     </Nav>

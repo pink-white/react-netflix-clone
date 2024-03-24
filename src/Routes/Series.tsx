@@ -6,7 +6,10 @@ import Slider from "../Components/SliderTemplate";
 import { useRouteMatch } from "react-router-dom";
 import Detail from "../Components/Detail";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
 function Series() {
   const { data: trendingTvData1, isLoading: trendingTvLoading1 } =
@@ -43,6 +46,7 @@ function Series() {
           isLoading={topTvLoading2}
           sliderTitle="인기있는 시리즈"
           category="tv"
+          dataName="topTv2"
         />
       )}
       {topTvData1 && (
@@ -52,6 +56,7 @@ function Series() {
           sliderTitle="역대 TOP 18 시리즈"
           isRanking={true}
           category="tv"
+          dataName="topTv"
         />
       )}
       {topTvData3 && (
@@ -60,6 +65,7 @@ function Series() {
           isLoading={topTvLoading3}
           sliderTitle="보고 또 봐도 좋은 인기 시리즈"
           category="tv"
+          dataName="topTv3"
         />
       )}
       {topTvData4 && (
@@ -68,6 +74,7 @@ function Series() {
           isLoading={topTvLoading4}
           sliderTitle="보면 좋을 시리즈들"
           category="tv"
+          dataName="topTv4"
         />
       )}
       {topTvData5 && (
@@ -76,6 +83,7 @@ function Series() {
           isLoading={topTvLoading5}
           sliderTitle="오늘의 발견!"
           category="tv"
+          dataName="topTv5"
         />
       )}
     </Wrapper>
